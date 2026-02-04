@@ -15,19 +15,15 @@ export class EndingScene extends Phaser.Scene {
         const noteContent = [
             "Deployment Successful!",
             "",
-            "Dear Xin,",
-            "Happy Birthday!",
-            "You've refactored your life,",
-            "escaped the bugs,",
-            "and navigated the slippery slopes.",
+            "Xin,",
             "",
-            "Now it's time to commit changes",
-            "and push to production.",
+            "Getting to know you these past few weeks",
+            "have been amazing.",
+            "I'm excited to spend more time with you",
+            "and see where our journey takes us!",
             "",
-            "Dinner at The Pink Door",
-            "Tonight at 6:00 PM.",
-            "",
-            "Love, Arin"
+            "P.S. - We have a reservation at Copline",
+            "later today at 5:45 p.m. ;)"
         ];
 
         // Scrolling Text
