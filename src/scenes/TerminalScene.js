@@ -136,7 +136,7 @@ export class TerminalScene extends Phaser.Scene {
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold text-rose-400 drop-shadow-lg">Xin</h1>
-            <p class="text-2xl md:text-3xl text-amber-600 font-medium">.deploy() Adventure</p>
+            <p class="text-2xl md:text-3xl text-amber-600 font-medium">2026 Birthday Adventure</p>
             
             <p class="text-lg text-rose-500 max-w-md mx-auto leading-relaxed">
               A special journey through offices, groceries, and snowy slopes awaits...
