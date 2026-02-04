@@ -27,8 +27,7 @@ export class EndingScene extends Phaser.Scene {
             "have been amazing.",
             "I'm excited to spend more time with you",
             "and see where our journey takes us!",
-            "P.S. - We have a reservation at Copline",
-            "later today at 5:45 p.m. ;)"
+            "P.S. - We have a reservation at Copline ;)"
         ];
 
         // Scrolling Text

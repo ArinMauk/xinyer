@@ -3,6 +3,10 @@ export class TerminalScene extends Phaser.Scene {
         super({ key: 'TerminalScene' });
     }
 
+    preload() {
+        this.load.audio('bgm', 'src/audio/Taylor Swift - Fortnight (feat. Post Malone) (Official Music Video).mp3');
+    }
+
     create() {
         // Background color handled by DOM overlay gradient
         this.createTerminalUI();
@@ -120,6 +124,10 @@ export class TerminalScene extends Phaser.Scene {
     }
 
     renderIntro() {
+        if (!this.sound.get('bgm')) {
+            this.sound.play('bgm', { loop: true, volume: 0.5 });
+        }
+
         const container = document.getElementById('content-container');
         container.innerHTML = `
             <div class="flex justify-center mb-4">
