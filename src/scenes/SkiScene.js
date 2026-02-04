@@ -9,8 +9,6 @@ export class SkiScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#ffffff'); // Snow
-
         // World Bounds
         const width = 800;
         const height = 5000; // Long slope

@@ -8,21 +8,25 @@ export class EndingScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#191970'); // Midnight Navy
-
+        // 1. Background Gradient (Warm Peach)
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+        
+        const card = this.add.graphics();
+        card.fillStyle(0xffffff, 1);
+        card.fillRoundedRect(width/2 - 300, 50, 600, 500, 24);
+        
         // Couch Image
-        const couch = this.add.image(400, 150, 'couch');
+        const couch = this.add.image(400, 220, 'couch');
         couch.setScale(0.25);
         
         // Note Content
         const noteContent = [
             "Xin,",
-            "",
             "Getting to know you these past few weeks",
             "have been amazing.",
             "I'm excited to spend more time with you",
             "and see where our journey takes us!",
-            "",
             "P.S. - We have a reservation at Copline",
             "later today at 5:45 p.m. ;)"
         ];
@@ -31,8 +35,8 @@ export class EndingScene extends Phaser.Scene {
         const text = this.add.text(400, 800, noteContent, { 
             fontSize: '24px', 
             align: 'center',
-            fill: '#ff69b4', // Taylor Pink
-            fontFamily: '"Press Start 2P"', // Or Inter if user reverted? I'll use Inter as that was the last successful request.
+            fill: '#1F2430', // Main Text (Dark Slate)
+            fontFamily: '"Press Start 2P"',
             lineSpacing: 10
         });
         text.setOrigin(0.5, 0);
@@ -49,15 +53,15 @@ export class EndingScene extends Phaser.Scene {
         // Scroll Up
         this.tweens.add({
             targets: text,
-            y: 300,
+            y: 380,
             duration: 10000,
             ease: 'Linear',
             onComplete: () => {
                 this.triggerConfetti();
-                this.add.text(400, 50, '🎉 HAPPY BIRTHDAY XIN! 🎉', { 
+                this.add.text(400, 60, '🎉 HAPPY BIRTHDAY XIN! 🎉', { 
                     fontSize: '32px', 
-                    fill: '#fff', 
-                    stroke: '#ff69b4', 
+                    fill: '#FF4D8D', // Primary Accent (Birthday Pink)
+                    stroke: '#FFFFFF', 
                     strokeThickness: 4 
                 }).setOrigin(0.5).setAlpha(0).setDepth(100);
                 
@@ -75,7 +79,8 @@ export class EndingScene extends Phaser.Scene {
         // Using canvas-confetti from CDN
         const duration = 15 * 1000;
         const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        // Colors: Birthday Pink, Soft Purple
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#FF4D8D', '#7C5CFF'] };
 
         const randomInRange = (min, max) => Math.random() * (max - min) + min;
 

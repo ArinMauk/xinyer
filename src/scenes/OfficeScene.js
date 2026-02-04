@@ -13,8 +13,6 @@ export class OfficeScene extends Phaser.Scene {
     create() {
         console.log('OfficeScene: create started');
         try {
-            this.cameras.main.setBackgroundColor('#0f172a'); // Slate 900
-            
             // Game State
             this.TILE_SIZE = 40;
             this.GRID_WIDTH = 16;

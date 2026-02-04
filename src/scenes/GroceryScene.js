@@ -4,7 +4,6 @@ export class GroceryScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#14532d'); // Green 900
         this.createGroceryUI();
     }
 

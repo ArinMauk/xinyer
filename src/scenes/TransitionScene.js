@@ -4,8 +4,6 @@ export class TransitionScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#87CEEB'); // Sky blue
-
         // Ground
         this.add.rectangle(400, 500, 800, 200, 0x228B22); // Green grass
         this.add.rectangle(400, 450, 800, 50, 0x333333); // Road
