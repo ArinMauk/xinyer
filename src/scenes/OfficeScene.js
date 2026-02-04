@@ -3,6 +3,13 @@ export class OfficeScene extends Phaser.Scene {
         super({ key: 'OfficeScene' });
     }
 
+    preload() {
+        this.load.image('xin', 'src/imgs/XinWangPortraitPixel.png');
+        this.load.image('bob', 'src/imgs/BobPixelArt.png');
+        this.load.image('dave', 'src/imgs/DavePixelArt.png');
+        this.load.image('karen', 'src/imgs/KarenPixelArt.png');
+    }
+
     create() {
         console.log('OfficeScene: create started');
         try {
@@ -103,9 +110,8 @@ export class OfficeScene extends Phaser.Scene {
             this.player.body.setCollideWorldBounds(true);
         }
 
-        const circle = this.add.circle(0, 0, 16, 0x10b981).setStrokeStyle(2, 0xffffff);
-        const label = this.add.text(0, 0, 'Xin', { fontSize: '12px', fill: '#fff' }).setOrigin(0.5);
-        this.player.add([circle, label]);
+        const sprite = this.add.image(0, 0, 'xin').setDisplaySize(32, 32);
+        this.player.add(sprite);
 
         this.physics.add.collider(this.player, this.walls);
         if (this.exitZone) {
@@ -117,9 +123,9 @@ export class OfficeScene extends Phaser.Scene {
         this.coworkers = [];
         
         const configs = [
-            { id: 1, x: 10, y: 3, name: 'Dave', color: 0xf97316, path: [{x:10,y:3}, {x:10,y:6}, {x:6,y:6}, {x:6,y:3}], msg: "Xin, I've got this PR for you to review!" },
-            { id: 2, x: 7, y: 9, name: 'Karen', color: 0xf97316, path: [{x:7,y:9}, {x:3,y:9}, {x:3,y:7}, {x:7,y:7}], msg: "Quick sync about the deployment?" },
-            { id: 3, x: 13, y: 5, name: 'Bob', color: 0xf97316, path: [{x:13,y:5}, {x:13,y:1}, {x:11,y:1}, {x:11,y:5}], msg: "Can you check my code changes?" }
+            { id: 1, x: 10, y: 3, name: 'Dave', img: 'dave', path: [{x:10,y:3}, {x:10,y:6}, {x:6,y:6}, {x:6,y:3}], msg: "Xin, I've got this PR for you to review!" },
+            { id: 2, x: 7, y: 9, name: 'Karen', img: 'karen', path: [{x:7,y:9}, {x:3,y:9}, {x:3,y:7}, {x:7,y:7}], msg: "Quick sync about the deployment?" },
+            { id: 3, x: 13, y: 5, name: 'Bob', img: 'bob', path: [{x:13,y:5}, {x:13,y:1}, {x:11,y:1}, {x:11,y:5}], msg: "Can you check my code changes?" }
         ];
 
         configs.forEach(cfg => {
@@ -130,10 +136,9 @@ export class OfficeScene extends Phaser.Scene {
             container.setSize(24, 24);
             
             const radius = this.add.circle(0, 0, this.DETECTION_RADIUS, 0xf97316, 0.1).setStrokeStyle(1, 0xf97316, 0.3);
-            const circle = this.add.circle(0, 0, 16, cfg.color);
-            const label = this.add.text(0, 0, cfg.name[0], { fontSize: '12px', fill: '#fff', fontStyle: 'bold' }).setOrigin(0.5);
+            const sprite = this.add.image(0, 0, cfg.img).setDisplaySize(32, 32);
             
-            container.add([radius, circle, label]);
+            container.add([radius, sprite]);
             
             // FIX: Use custom property to avoid conflict with Phaser's data manager
             container.coworkerData = {
