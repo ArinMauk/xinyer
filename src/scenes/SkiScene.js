@@ -3,6 +3,11 @@ export class SkiScene extends Phaser.Scene {
         super({ key: 'SkiScene' });
     }
 
+    preload() {
+        this.load.image('xin_ski', 'src/imgs/XinSkiingPixel.png');
+        this.load.image('arin_ski', 'src/imgs/ArinSkiingPixel.png');
+    }
+
     create() {
         this.cameras.main.setBackgroundColor('#ffffff'); // Snow
 
@@ -22,12 +27,8 @@ export class SkiScene extends Phaser.Scene {
         }).setScrollFactor(0).setDepth(100);
 
         // Players
-        this.xin = this.createPlayer(300, 100, '⛷️', 'Xin');
-        this.arin = this.createPlayer(500, 100, '🎿', 'Arin');
-        
-        // Arin Fall Logic
-        this.arin.isFallen = false;
-        this.scheduleNextFall();
+        this.xin = this.createPlayer(300, 100, 'xin_ski', 'Xin');
+        this.arin = this.createPlayer(500, 100, 'arin_ski', 'Arin');
 
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -62,18 +63,34 @@ export class SkiScene extends Phaser.Scene {
             body.setCircle(12);
         }
 
+        // Speed Boosts
+        this.speedBoosts = this.physics.add.staticGroup();
+        for (let i = 0; i < 15; i++) {
+            const x = Phaser.Math.Between(50, 750);
+            const y = Phaser.Math.Between(300, 4800);
+            const boost = this.add.text(x, y, '⚡', { fontSize: '24px' });
+            this.speedBoosts.add(boost);
+            const body = boost.body;
+            body.updateFromGameObject();
+            body.setCircle(12);
+        }
+
         // Lodge (Goal)
         this.lodge = this.add.text(width/2 - 50, height - 200, '🏠\nLodge', { fontSize: '64px', align: 'center' });
         this.physics.add.existing(this.lodge, true); // Static
         
         // Collisions/Overlaps
-        // Trees slow you down instead of stopping
-        this.physics.add.overlap(this.xin, this.trees, (p, t) => this.handleTreeHit(p));
-        this.physics.add.overlap(this.arin, this.trees, (p, t) => this.handleTreeHit(p));
+        // Trees now stop you
+        this.physics.add.collider(this.xin, this.trees);
+        this.physics.add.collider(this.arin, this.trees);
         
         // Coins
         this.physics.add.overlap(this.xin, this.coins, (p, c) => this.collectCoin(c));
         this.physics.add.overlap(this.arin, this.coins, (p, c) => this.collectCoin(c));
+
+        // Speed Boosts
+        this.physics.add.overlap(this.xin, this.speedBoosts, (p, b) => this.collectBoost(p, b));
+        this.physics.add.overlap(this.arin, this.speedBoosts, (p, b) => this.collectBoost(p, b));
 
         // Win
         this.physics.add.overlap(this.xin, this.lodge, () => this.xin.finished = true);
@@ -85,8 +102,8 @@ export class SkiScene extends Phaser.Scene {
         }).setScrollFactor(0).setDepth(100);
     }
 
-    createPlayer(x, y, emoji, name) {
-        const p = this.add.text(x, y, emoji, { fontSize: '32px' });
+    createPlayer(x, y, imgKey, name) {
+        const p = this.add.image(x, y, imgKey).setDisplaySize(32, 32);
         this.physics.add.existing(p);
         p.body.setCollideWorldBounds(true);
         p.body.setCircle(12, 4, 4);
@@ -96,40 +113,18 @@ export class SkiScene extends Phaser.Scene {
         const tag = this.add.text(x, y-20, name, { fontSize: '12px', fill: '#000' });
         p.tag = tag;
         
-        // Shoot text (hidden initially)
-        p.shootText = this.add.text(x, y-40, "Shoot!", { fontSize: '14px', fill: '#f00', fontStyle: 'bold', backgroundColor: '#fff' });
-        p.shootText.setVisible(false);
-        
+        p.baseSpeed = 200;
+        p.speedMultiplier = 1;
         p.finished = false;
         return p;
     }
 
-    scheduleNextFall() {
-        const delay = Phaser.Math.Between(3000, 7000);
-        this.time.delayedCall(delay, () => {
-            if (!this.arin.finished) {
-                this.triggerArinFall();
-                this.scheduleNextFall();
-            }
-        });
-    }
-
-    triggerArinFall() {
-        this.arin.isFallen = true;
-        this.arin.shootText.setVisible(true);
-        this.arin.body.setVelocity(0); // Stop immediately
-        
-        // Recover after 2 seconds
+    collectBoost(player, boost) {
+        boost.destroy();
+        player.speedMultiplier = 2; // Double speed
         this.time.delayedCall(2000, () => {
-            this.arin.isFallen = false;
-            this.arin.shootText.setVisible(false);
+            player.speedMultiplier = 1;
         });
-    }
-
-    handleTreeHit(player) {
-        // Slow down significantly
-        player.body.velocity.x *= 0.5;
-        player.body.velocity.y *= 0.5;
     }
 
     collectCoin(coin) {
@@ -146,45 +141,40 @@ export class SkiScene extends Phaser.Scene {
         // Update tags
         this.xin.tag.setPosition(this.xin.x, this.xin.y - 20);
         this.arin.tag.setPosition(this.arin.x, this.arin.y - 20);
-        this.arin.shootText.setPosition(this.arin.x, this.arin.y - 45);
-
-        const speed = 200;
 
         // Xin Controls (Precise)
         if (!this.xin.finished) {
+            const speed = this.xin.baseSpeed * this.xin.speedMultiplier;
             this.xin.body.setVelocity(0);
             if (this.cursors.left.isDown) this.xin.body.setVelocityX(-speed);
             else if (this.cursors.right.isDown) this.xin.body.setVelocityX(speed);
             
             if (this.cursors.up.isDown) this.xin.body.setVelocityY(-speed);
             else if (this.cursors.down.isDown) this.xin.body.setVelocityY(speed);
-            else this.xin.body.setVelocityY(50); // Gravity/Slope
+            else this.xin.body.setVelocityY(50 * this.xin.speedMultiplier); // Gravity/Slope
         } else {
             this.xin.body.setVelocity(0);
         }
 
-        // Arin Controls (Wobbly & Falling)
+        // Arin Controls (Wobbly)
         if (!this.arin.finished) {
-            if (this.arin.isFallen) {
-                this.arin.body.setVelocity(0); // Stay fallen
-            } else {
-                let vx = 0;
-                let vy = 50; // Slope
+            const speed = this.arin.baseSpeed * this.arin.speedMultiplier;
+            let vx = 0;
+            let vy = 50 * this.arin.speedMultiplier; // Slope
 
-                if (this.keys.a.isDown) vx = -speed;
-                if (this.keys.d.isDown) vx = speed;
-                if (this.keys.w.isDown) vy = -speed;
-                if (this.keys.s.isDown) vy = speed;
+            if (this.keys.a.isDown) vx = -speed;
+            if (this.keys.d.isDown) vx = speed;
+            if (this.keys.w.isDown) vy = -speed;
+            if (this.keys.s.isDown) vy = speed;
 
-                // Apply Stronger Wobble
-                // Increased amplitude from 100 to 150
-                const wobble = Math.sin(time / 150) * 150; 
-                if (vx !== 0 || vy > 60) {
-                    vx += wobble;
-                }
-
-                this.arin.body.setVelocity(vx, vy);
+            // Apply Wobble
+            // Increased amplitude (250) and frequency (time/150)
+            const wobble = Math.sin(time / 150) * 250; 
+            if (vx !== 0 || vy > 60) {
+                vx += wobble;
             }
+
+            this.arin.body.setVelocity(vx, vy);
         } else {
             this.arin.body.setVelocity(0);
         }

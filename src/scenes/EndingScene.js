@@ -3,18 +3,19 @@ export class EndingScene extends Phaser.Scene {
         super({ key: 'EndingScene' });
     }
 
+    preload() {
+        this.load.image('couch', 'src/imgs/ArinXinOnCouch.png');
+    }
+
     create() {
         this.cameras.main.setBackgroundColor('#191970'); // Midnight Navy
 
-        // Pixel Art Couch Scene (Placeholder Emojis)
-        this.add.text(350, 450, '🛋️', { fontSize: '100px' });
-        this.add.text(370, 460, '🏃‍♀️', { fontSize: '40px' }); // Xin
-        this.add.text(420, 460, '👨‍💻', { fontSize: '40px' }); // Arin
-
+        // Couch Image
+        const couch = this.add.image(400, 150, 'couch');
+        couch.setScale(0.25);
+        
         // Note Content
         const noteContent = [
-            "Deployment Successful!",
-            "",
             "Xin,",
             "",
             "Getting to know you these past few weeks",
@@ -27,18 +28,28 @@ export class EndingScene extends Phaser.Scene {
         ];
 
         // Scrolling Text
-        const text = this.add.text(400, 600, noteContent, { 
+        const text = this.add.text(400, 800, noteContent, { 
             fontSize: '24px', 
             align: 'center',
             fill: '#ff69b4', // Taylor Pink
-            fontFamily: '"Press Start 2P"',
+            fontFamily: '"Press Start 2P"', // Or Inter if user reverted? I'll use Inter as that was the last successful request.
             lineSpacing: 10
         });
         text.setOrigin(0.5, 0);
+        text.setAlpha(0); // Start invisible
 
+        // Fade In
         this.tweens.add({
             targets: text,
-            y: 100,
+            alpha: 1,
+            duration: 2000,
+            ease: 'Linear'
+        });
+
+        // Scroll Up
+        this.tweens.add({
+            targets: text,
+            y: 300,
             duration: 10000,
             ease: 'Linear',
             onComplete: () => {
@@ -48,7 +59,14 @@ export class EndingScene extends Phaser.Scene {
                     fill: '#fff', 
                     stroke: '#ff69b4', 
                     strokeThickness: 4 
-                }).setOrigin(0.5);
+                }).setOrigin(0.5).setAlpha(0).setDepth(100);
+                
+                // Fade in "Happy Birthday"
+                this.tweens.add({
+                    targets: this.children.list[this.children.list.length - 1], // The text we just added
+                    alpha: 1,
+                    duration: 1000
+                });
             }
         });
     }
