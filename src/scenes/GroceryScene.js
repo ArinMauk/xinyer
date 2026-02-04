@@ -37,7 +37,7 @@ export class GroceryScene extends Phaser.Scene {
                 <!-- Header -->
                 <div class="text-center mb-6">
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Whole Foods Shopping List</h1>
-                    <p class="text-green-700">Refactor the cart! <br><span class="text-sm text-gray-500">Requirement: >50% Veggies</span></p>
+                    <p class="text-green-700 font-medium">Help Arin get a six pack of abs by summer! Help him make better nutrition choices!<br><span class="text-sm text-gray-500">Requirement: >50% Veggies</span></p>
                 </div>
 
                 <!-- Health Score -->

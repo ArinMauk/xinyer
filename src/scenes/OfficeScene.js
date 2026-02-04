@@ -162,6 +162,9 @@ export class OfficeScene extends Phaser.Scene {
         if (!uiContainer) return;
         
         uiContainer.innerHTML = `
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-10 text-center pointer-events-none drop-shadow-md">
+                 <h1 class="text-xl md:text-2xl font-bold text-white bg-slate-900/60 px-6 py-2 rounded-full border border-slate-600">Escape Amazon and avoid Code reviews!</h1>
+            </div>
             <div class="absolute top-4 left-4 z-10 w-64 bg-slate-900/80 p-3 rounded-lg border border-slate-700 ui-content">
                 <div class="flex justify-between text-sm mb-1 text-slate-300">
                     <span>Job Security</span>
